@@ -77,13 +77,13 @@ app.post("/register", async (req, res) => {
   try {
     const { name, email, password } = req.body;
 
-    const user = await Register.findOne({ email });
+    // const user = await Register.findOne({ email });
 
-    if (user) {
-      return res.status(400).json({
-        message: "User already exists",
-      });
-    }
+    // if (user) {
+    //   return res.status(400).json({
+    //     message: "User already exists",
+    //   });
+    // }
 
     const hashPassword = await bcrypt.hash(password, 10);
 

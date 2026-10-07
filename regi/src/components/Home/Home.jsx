@@ -5,7 +5,15 @@ import { Link } from "react-router-dom";
 
 const Home = () => {
   const [Product, setProduct] = useState([]);
+  const [cartCount, setCartCount] = useState(0);
 
+const addToCart = () => {
+  setCartCount((prev) => prev + 1);
+};
+
+// const modelinfo(){
+
+// }
   useEffect(() => {
     axios
       .get("http://localhost:1200/products")
@@ -152,6 +160,49 @@ const Home = () => {
               >
                 Search
               </button>
+               <div>
+      {/* Cart Icon */}
+      <div
+        style={{
+          position: "relative",
+          display: "inline-block",
+          cursor: "pointer",
+        }}
+      >
+        <i
+          className="bi bi-cart4"
+          // onClick={modelinfo}
+          style={{ fontSize: "28px" }}
+        ></i>
+
+        {/* Circle Badge */}
+        {cartCount > 0 && (
+          <span
+            style={{
+              position: "absolute",
+              top: "-8px",
+              right: "-10px",
+              background: "red",
+              color: "white",
+              width: "20px",
+              height: "20px",
+              borderRadius: "50%",
+              display: "flex",
+              justifyContent: "center",
+              alignItems: "center",
+              fontSize: "12px",
+              fontWeight: "bold",
+            }}
+          >
+            {cartCount}
+          </span>
+        )}
+      </div>
+
+     
+    </div>
+
+              
             </form>
 
           </div>
@@ -378,15 +429,20 @@ const Home = () => {
                         ₹{product.price}
                       </h5>
 
-                      <a
-                        href="#"
-                        className="btn btn-primary btn-sm px-3"
-                        style={{
-                          borderRadius: "8px",
-                        }}
-                      >
-                        Add +
-                      </a>
+                       <a
+          href="#"
+          className="btn btn-primary btn-sm px-3"
+          
+          onClick={(e) => {
+            e.preventDefault();
+            addToCart();
+          }}
+          style={{
+            borderRadius: "8px",
+          }}
+        >
+          Add +
+        </a>
 
                     </div>
 

@@ -12,18 +12,25 @@ const Register = () => {
   const formik = useFormik({
     initialValues: { name: "", email: "", password: "" },
     validationSchema: validate,
-    onSubmit: async (values) => {
-      try {
-        const res = await axios.post("http://localhost:1200/register", values);
-        console.log(res.data);
-        alert(res.data);
-        alert("register Sucessfully");
-        navigate("/Home");
-      } catch (error) {
-        console.log(error);
-        alert("not register");
-      }
-    },
+  onSubmit: async (values) => {
+  try {
+    const res = await axios.post(
+      "http://localhost:1200/register",
+      values
+    );
+
+    console.log(res.data);
+
+    alert(res.data.message);
+
+    navigate("/Home");
+
+  } catch (error) {
+    console.log(error);
+
+    alert(error.response?.data?.message || "Registration failed");
+  }
+},
   });
   return (
     <div
