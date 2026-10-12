@@ -1,27 +1,12 @@
 
-import axios from "axios";
-import { useEffect, useState } from "react";
+import { useState } from "react";
 import { Link } from "react-router-dom";
+import CartIcon from "./carticon";
+import Cards from "./Cards"
+import Categories from "./Categories";
 
 const Home = () => {
-  const [Product, setProduct] = useState([]);
-  const [cartCount, setCartCount] = useState(0);
-
-const addToCart = () => {
-  setCartCount((prev) => prev + 1);
-};
-
-// const modelinfo(){
-
-// }
-  useEffect(() => {
-    axios
-      .get("http://localhost:1200/products")
-      .then((res) => {
-        setProduct(res.data);
-      });
-  }, []);
-
+    const [selectedCategory, setSelectedCategory] = useState("All Products");
   return (
     <div
       style={{
@@ -90,50 +75,14 @@ const addToCart = () => {
                 </Link>
               </li>
 
-              <li className="nav-item dropdown">
-                <a
-                  className="nav-link dropdown-toggle fw-semibold px-3"
-                  href="#"
-                  role="button"
-                  data-bs-toggle="dropdown"
-                >
-                  Categories
-                </a>
-
-                <ul className="dropdown-menu shadow border-0 rounded-3">
-
-                  <li>
-                    <a className="dropdown-item" href="#">
-                      Electronics
-                    </a>
-                  </li>
-
-                  <li>
-                    <a className="dropdown-item" href="#">
-                      Fashion
-                    </a>
-                  </li>
-
-                  <li>
-                    <a className="dropdown-item" href="#">
-                      Home & Kitchen
-                    </a>
-                  </li>
-
-                  <li>
-                    <hr className="dropdown-divider" />
-                  </li>
-
-                  <li>
-                    <a className="dropdown-item" href="#">
-                      All Products
-                    </a>
-                  </li>
-
-                </ul>
-              </li>
+              <Categories
+        selectedCategory={selectedCategory}
+        setSelectedCategory={setSelectedCategory}
+      /> 
+                          
 
             </ul>
+             
 
             {/* Search */}
             <form
@@ -154,50 +103,17 @@ const addToCart = () => {
               <button
                 className="btn btn-primary px-3"
                 type="submit"
+                
                 style={{
                   borderRadius: "8px",
                 }}
               >
                 Search
               </button>
+              <CartIcon />
                <div>
       {/* Cart Icon */}
-      <div
-        style={{
-          position: "relative",
-          display: "inline-block",
-          cursor: "pointer",
-        }}
-      >
-        <i
-          className="bi bi-cart4"
-          // onClick={modelinfo}
-          style={{ fontSize: "28px" }}
-        ></i>
-
-        {/* Circle Badge */}
-        {cartCount > 0 && (
-          <span
-            style={{
-              position: "absolute",
-              top: "-8px",
-              right: "-10px",
-              background: "red",
-              color: "white",
-              width: "20px",
-              height: "20px",
-              borderRadius: "50%",
-              display: "flex",
-              justifyContent: "center",
-              alignItems: "center",
-              fontSize: "12px",
-              fontWeight: "bold",
-            }}
-          >
-            {cartCount}
-          </span>
-        )}
-      </div>
+      
 
      
     </div>
@@ -289,175 +205,9 @@ const addToCart = () => {
       </section>
 
 
-      {/* ================= PRODUCTS ================= */}
-      <section className="py-5">
 
-        <div className="container">
-
-          {/* Heading */}
-          <div className="d-flex justify-content-between align-items-end mb-4">
-
-            <div>
-              <p
-                className="text-primary fw-bold mb-1"
-                style={{
-                  fontSize: "13px",
-                  letterSpacing: "1.5px",
-                }}
-              >
-                OUR COLLECTION
-              </p>
-
-              <h2
-                className="fw-bold mb-0"
-                style={{
-                  color: "#111827",
-                }}
-              >
-                Featured Products
-              </h2>
-            </div>
-
-            <span className="text-secondary">
-              {Product.length} Products
-            </span>
-
-          </div>
-
-
-          {/* Product Cards */}
-          <div className="row g-4">
-
-            {Product.map((product) => (
-
-              <div
-                key={product._id}
-                className="col-12 col-sm-6 col-lg-4 col-xl-3"
-              >
-
-                <div
-                  className="card h-100 border-0 overflow-hidden"
-                  style={{
-                    borderRadius: "16px",
-                    boxShadow:
-                      "0 5px 20px rgba(0,0,0,0.07)",
-                    transition: "0.3s",
-                  }}
-                >
-
-                  {/* Image */}
-                  <div
-                    className="position-relative"
-                    style={{
-                      height: "240px",
-                      background: "#f1f3f6",
-                    }}
-                  >
-
-                    <img
-                      src={product.image}
-                      className="w-100 h-100"
-                      alt={product.title}
-                      style={{
-                        objectFit: "cover",
-                      }}
-                    />
-
-                    <span
-                      className="badge bg-primary position-absolute"
-                      style={{
-                        top: "12px",
-                        left: "12px",
-                        padding: "7px 11px",
-                        borderRadius: "20px",
-                      }}
-                    >
-                      New
-                    </span>
-
-                  </div>
-
-
-                  {/* Card Body */}
-                  <div className="card-body p-3">
-
-                    <small
-                      className="text-primary fw-bold"
-                      style={{
-                        textTransform: "uppercase",
-                        fontSize: "11px",
-                        letterSpacing: "1px",
-                      }}
-                    >
-                      Product
-                    </small>
-
-                    <h5
-                      className="card-title fw-bold mt-1 mb-2"
-                      style={{
-                        color: "#111827",
-                      }}
-                    >
-                      {product.title}
-                    </h5>
-
-                    <p
-                      className="card-text text-secondary"
-                      style={{
-                        fontSize: "14px",
-                        lineHeight: "1.5",
-                        minHeight: "42px",
-                        display: "-webkit-box",
-                        WebkitLineClamp: 2,
-                        WebkitBoxOrient: "vertical",
-                        overflow: "hidden",
-                      }}
-                    >
-                      {product.description}
-                    </p>
-
-
-                    {/* Price + Button */}
-                    <div className="d-flex justify-content-between align-items-center mt-3">
-
-                      <h5
-                        className="fw-bold mb-0"
-                        style={{
-                          color: "#111827",
-                        }}
-                      >
-                        ₹{product.price}
-                      </h5>
-
-                       <a
-          href="#"
-          className="btn btn-primary btn-sm px-3"
-          
-          onClick={(e) => {
-            e.preventDefault();
-            addToCart();
-          }}
-          style={{
-            borderRadius: "8px",
-          }}
-        >
-          Add +
-        </a>
-
-                    </div>
-
-                  </div>
-
-                </div>
-
-              </div>
-
-            ))}
-
-          </div>
-
-        </div>
-      </section>
+       <Cards selectedCategory={selectedCategory} />
+     
 
 
       {/* ================= FOOTER ================= */}

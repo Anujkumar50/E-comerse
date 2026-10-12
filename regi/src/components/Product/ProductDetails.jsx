@@ -1,8 +1,11 @@
 import axios from "axios";
 import { useFormik } from "formik";
 import * as yup from "yup";
+import { useNavigate } from "react-router-dom";
 
 export function ProductsDetails() {
+
+  const navigate = useNavigate();
 
   const validationSchema = yup.object({
     title: yup.string().required("Title is required"),
@@ -65,8 +68,9 @@ export function ProductsDetails() {
 
         console.log(res.data);
 
-        if (res.data.massage === "productsave") {
+        if (res.data.message === "Product Saved") {
           alert("Product saved successfully");
+          navigate("/home");
         } else {
           alert("Product not inserted");
         }
@@ -123,13 +127,7 @@ export function ProductsDetails() {
           )}
 
           {/* CATEGORY */}
-          <input
-            className="form-control mt-2"
-            name="category"
-            placeholder="Category"
-            onChange={formik.handleChange}
-            value={formik.values.category}
-          />
+          <select className="form-control mt-2" name="category" onChange={formik.handleChange} value={formik.values.category} > <option value="category">Category</option> <option value="Electronics">Electronics</option> <option value="Clothes">Clothes</option> <option value="Fashens">Fashens</option> </select>
           {formik.touched.category && formik.errors.category && (
             <p className="text-danger">{formik.errors.category}</p>
           )}

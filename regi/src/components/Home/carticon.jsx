@@ -1,56 +1,77 @@
-import { useState } from "react";
+
+import { useContext } from "react";
+import { ValueContext } from "../context/Context";
 
 const CartIcon = () => {
-  const [cartCount, setCartCount] = useState(0);
-
-  const addToCart = () => {
-    setCartCount(cartCount + 1);
-  };
+  const { value } = useContext(ValueContext);
 
   return (
-    <div>
-      {/* Cart Icon */}
-      <div
+    <div
+      style={{
+        display: "flex",
+        alignItems: "center",
+        justifyContent: "center",
+      }}
+    >
+      <button
+        type="button"
+        aria-label={`Shopping cart, ${value} items`}
         style={{
           position: "relative",
-          display: "inline-block",
+          display: "flex",
+          alignItems: "center",
+          justifyContent: "center",
+          gap: "8px",
+          padding: "10px 14px",
+          border: "1px solid #e5e7eb",
+          borderRadius: "12px",
+          backgroundColor: "#ffffff",
+          color: "#1f2937",
           cursor: "pointer",
+          transition: "all 0.2s ease",
         }}
       >
         <i
           className="bi bi-cart4"
-          style={{ fontSize: "28px" }}
-        ></i>
+          style={{
+            fontSize: "26px",
+            lineHeight: 1,
+          }}
+        />
 
-        {/* Circle Badge */}
-        {cartCount > 0 && (
+        <span
+          style={{
+            fontSize: "14px",
+            fontWeight: "600",
+          }}
+        >
+        
+        </span>
+
+        {value > 0 && (
           <span
             style={{
               position: "absolute",
               top: "-8px",
-              right: "-10px",
-              background: "red",
-              color: "white",
-              width: "20px",
-              height: "20px",
-              borderRadius: "50%",
+              right: "-8px",
+              minWidth: "21px",
+              height: "21px",
+              padding: "0 5px",
+              borderRadius: "50px",
+              backgroundColor: "#ef4444",
+              color: "#ffffff",
               display: "flex",
               justifyContent: "center",
               alignItems: "center",
-              fontSize: "12px",
-              fontWeight: "bold",
+              fontSize: "11px",
+              fontWeight: "700",
+              border: "2px solid white",
+              boxSizing: "content-box",
             }}
           >
-            {cartCount}
+            {value}
           </span>
         )}
-      </div>
-
-      <button
-        className="btn btn-primary ms-3"
-        onClick={addToCart}
-      >
-        Add to Cart
       </button>
     </div>
   );

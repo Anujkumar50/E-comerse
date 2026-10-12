@@ -1,5 +1,6 @@
 import express from "express";
 import mongoose from "mongoose";
+import cookieParser from "cookie-parser";
 import cors from "cors";
 import bcrypt from "bcrypt";
 import jwt from "jsonwebtoken";
@@ -8,13 +9,16 @@ import { v2 as cloudinary } from "cloudinary";
 import { CloudinaryStorage } from "multer-storage-cloudinary";
 import dotenv from "dotenv";
 
+
+
+
 dotenv.config();
 
 const app = express();
 
 app.use(cors());
 app.use(express.json());
-
+app.use(cookieParser());
 
 // ================= DATABASE =================
 
@@ -77,13 +81,13 @@ app.post("/register", async (req, res) => {
   try {
     const { name, email, password } = req.body;
 
-    // const user = await Register.findOne({ email });
+    const user = await Register.findOne({ email });
 
-    // if (user) {
-    //   return res.status(400).json({
-    //     message: "User already exists",
-    //   });
-    // }
+    if (user) {
+      return res.status(400).json({
+        message: "User already exists",
+      });
+    }
 
     const hashPassword = await bcrypt.hash(password, 10);
 
@@ -141,6 +145,13 @@ app.post("/login", async (req, res) => {
         expiresIn: "1h",
       }
     );
+
+     res.cookie("token", token, {
+      httpOnly: true,
+      secure: false, // localhost ke liye false
+      sameSite: "lax",
+      maxAge: 90 * 24 * 60 * 60 * 1000,
+    });
 
     res.status(200).json({
       message: "Login Successful",
@@ -235,6 +246,28 @@ app.get("/products", async (req, res) => {
     });
   }
 });
+
+app.get("/categories", async (req, res) => {
+  try {
+    const categories = await Product.distinct("category");
+    res.json(categories);
+  } catch (error) {
+    res.status(500).json({ message: error.message });
+  }
+});
+
+app.get("/products/category/:category", async (req, res) => {
+  try {
+    const category = req.params.category.toLowerCase();
+
+    const products = await Product.find({ category });
+
+    res.json(products);
+  } catch (error) {
+    res.status(500).json({ message: error.message });
+  }
+});
+
 
 
 // ================= SERVER =================
