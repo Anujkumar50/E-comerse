@@ -205,31 +205,57 @@ app.get("/profile", auth, (req, res) => {
 
 // ================= ADD PRODUCT =================
 
-app.post(
-  "/productdetails",
-  upload.single("image"),
-  async (req, res) => {
+
+ // ================= CATEGORY-WISE ADD PRODUCT =================
+
+const addProduct = (category) => {
+  return async (req, res) => {
     try {
       const product = new Product({
         title: req.body.title,
         price: req.body.price,
         description: req.body.description,
-        category: req.body.category,
+        category: category,
         stock: req.body.stock,
         image: req.file?.path || "",
       });
 
       await product.save();
 
-      res.json({
+      res.status(201).json({
         message: "Product Saved",
+        product,
       });
     } catch (error) {
       res.status(500).json({
         message: error.message,
       });
     }
-  }
+  };
+};
+
+app.post(
+  "/electronics",
+  upload.single("image"),
+  addProduct("Electronics")
+);
+
+app.post(
+  "/clothes",
+  upload.single("image"),
+  addProduct("Clothes")
+);
+
+app.post(
+  "/fashens",
+  upload.single("image"),
+  addProduct("Fashens")
+);
+
+app.post(
+  "/home",
+  upload.single("image"),
+  addProduct("Home")
 );
 
 
@@ -238,31 +264,64 @@ app.post(
 app.get("/products", async (req, res) => {
   try {
     const products = await Product.find();
-
     res.json(products);
-  } catch (error) {
-    res.status(500).json({
-      message: error.message,
-    });
-  }
-});
-
-app.get("/categories", async (req, res) => {
-  try {
-    const categories = await Product.distinct("category");
-    res.json(categories);
   } catch (error) {
     res.status(500).json({ message: error.message });
   }
 });
 
-app.get("/products/category/:category", async (req, res) => {
+// ================= GET CATEGORY PRODUCTS =================
+
+app.get("/electronics", async (req, res) => {
   try {
-    const category = req.params.category.toLowerCase();
-
-    const products = await Product.find({ category });
-
+    const products = await Product.find({
+      category: "Electronics",
+    });
     res.json(products);
+  } catch (error) {
+    res.status(500).json({ message: error.message });
+  }
+});
+
+app.get("/clothes", async (req, res) => {
+  try {
+    const products = await Product.find({
+      category: "Clothes",
+    });
+    res.json(products);
+  } catch (error) {
+    res.status(500).json({ message: error.message });
+  }
+});
+
+app.get("/fashens", async (req, res) => {
+  try {
+    const products = await Product.find({
+      category: "Fashens",
+    });
+    res.json(products);
+  } catch (error) {
+    res.status(500).json({ message: error.message });
+  }
+});
+
+app.get("/home", async (req, res) => {
+  try {
+    const products = await Product.find({
+      category: "Home",
+    });
+    res.json(products);
+  } catch (error) {
+    res.status(500).json({ message: error.message });
+  }
+});
+
+// ================= GET CATEGORIES =================
+
+app.get("/categories", async (req, res) => {
+  try {
+    const categories = await Product.distinct("category");
+    res.json(categories);
   } catch (error) {
     res.status(500).json({ message: error.message });
   }

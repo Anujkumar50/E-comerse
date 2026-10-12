@@ -4,7 +4,6 @@ import * as yup from "yup";
 import { useNavigate } from "react-router-dom";
 
 export function ProductsDetails() {
-
   const navigate = useNavigate();
 
   const validationSchema = yup.object({
@@ -27,7 +26,7 @@ export function ProductsDetails() {
       .typeError("Stock must be a number")
       .required("Stock is required"),
 
-    image: yup.mixed().required("Image is required")   // 👈 IMPORTANT
+    image: yup.mixed().required("Image is required"), // 👈 IMPORTANT
   });
 
   const formik = useFormik({
@@ -37,57 +36,69 @@ export function ProductsDetails() {
       description: "",
       category: "",
       stock: "",
-      image: null
+      image: null,
     },
 
     validationSchema,
 
-    onSubmit: async (values) => {
-      try {
+   onSubmit: async (values) => {
+try {
+const formData = new FormData();
 
-        const formData = new FormData();
+formData.append("title", values.title);
+formData.append("price", values.price);
+formData.append("description", values.description);
+formData.append("category", values.category);
+formData.append("stock", values.stock);
+formData.append("image", values.image);
 
-        formData.append("title", values.title);
-        formData.append("price", values.price);
-        formData.append("description", values.description);
-        formData.append("category", values.category);
-        formData.append("stock", values.stock);
 
-        // 👇 image send
-        formData.append("image", values.image);
 
-        const res = await axios.post(
-          "http://localhost:1200/productdetails",
-          formData,
-          {
-    headers: {
-      "Content-Type": "multipart/form-data",
-    },
-  }
-        );
+// Category ke according API select hogi
 
-        console.log(res.data);
+const API_URL = import.meta.env.VITE_API_URL;
 
-        if (res.data.message === "Product Saved") {
-          alert("Product saved successfully");
-          navigate("/home");
-        } else {
-          alert("Product not inserted");
-        }
+const apiRoutes = {
+   Electronics: `${API_URL}/electronics`,
+  Clothes: `${API_URL}/clothes`,
+  Fashens: `${API_URL}/fashens`,
+  Home: `${API_URL}/home`,
+};
 
-      } catch (error) {
-        console.log(error);
-        alert("Error occurred");
-      }
-    }
+const apiUrl = apiRoutes[values.category];
+
+if (!apiUrl) {
+  alert("Please select a category");
+  return;
+}
+
+const res = await axios.post(apiUrl, formData);
+
+console.log(res.data);
+
+if (res.data.message === "Product Saved") {
+  alert("Product saved successfully");
+  navigate("/home");
+} else {
+  alert("Product not inserted");
+}
+
+
+} catch (error) {
+console.log(error.response?.data || error.message);
+alert("Error occurred");
+}
+},
+
   });
 
   return (
     <div className="d-flex justify-content-center">
-      <div className="p-3" style={{ width: "500px", border: "2px solid black" }}>
-
+      <div
+        className="p-3"
+        style={{ width: "500px", border: "2px solid black" }}
+      >
         <form onSubmit={formik.handleSubmit}>
-
           <h2 className="text-center">Product Details</h2>
 
           {/* TITLE */}
@@ -127,7 +138,24 @@ export function ProductsDetails() {
           )}
 
           {/* CATEGORY */}
-          <select className="form-control mt-2" name="category" onChange={formik.handleChange} value={formik.values.category} > <option value="category">Category</option> <option value="Electronics">Electronics</option> <option value="Clothes">Clothes</option> <option value="Fashens">Fashens</option> </select>
+         <select
+className="form-control mt-2"
+name="category"
+onChange={formik.handleChange}
+onBlur={formik.handleBlur}
+value={formik.values.category}
+
+>
+
+  <option value="All Products">All Products</option>
+  <option value="Electronics">Electronics</option>
+  <option value="Clothes">Clothes</option>
+  <option value="Fashens">Fashens</option>
+  <option value="Home">Home</option>
+</select>
+
+
+
           {formik.touched.category && formik.errors.category && (
             <p className="text-danger">{formik.errors.category}</p>
           )}
@@ -159,9 +187,7 @@ export function ProductsDetails() {
           <button type="submit" className="btn btn-primary form-control mt-3">
             Submit Product
           </button>
-
         </form>
-
       </div>
     </div>
   );

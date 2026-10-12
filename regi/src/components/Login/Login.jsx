@@ -16,7 +16,7 @@ const Login = () => {
     validationSchema: validate,
     onSubmit: async (values) => {
       try {
-        const res = await axios.post("http://localhost:1200/login", values);
+        const res = await axios.post(`${import.meta.env.VITE_API_URL}/login`, values);
         console.log(res.data);
         alert(res.data.message);
         localStorage.setItem("token", res.data.token);

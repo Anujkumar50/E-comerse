@@ -14,8 +14,8 @@ const Register = () => {
     validationSchema: validate,
   onSubmit: async (values) => {
   try {
-    const res = await axios.post(
-      "http://localhost:1200/register",
+    const res = await axios.post(`
+      ${import.meta.env.VITE_API_URL}/register`,
       values
     );
 

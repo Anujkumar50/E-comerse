@@ -1,77 +1,95 @@
-import { useEffect, useState , useContext} from "react";
+
+import { useEffect, useState, useContext } from "react";
 import { ValueContext } from "../context/Context";
 import axios from "axios";
-const Cards = ()=>{
-     const [Product, setProduct] = useState([]);
-    
-     const { addToCart } = useContext(ValueContext);
 
+const Cards = ({ selectedCategory = "All Products" }) => {
+  const [Product, setProduct] = useState([]);
+  const [loading, setLoading] = useState(true);
+  const [error, setError] = useState("");
 
-       useEffect(() => {
+  const { addToCart } = useContext(ValueContext);
+
+  // MongoDB se saare products fetch karo
+  useEffect(() => {
     axios
-      .get("http://localhost:1200/products")
+      .get(`${import.meta.env.VITE_API_URL}/products`)
       .then((res) => {
-        setProduct(res.data);
+        setProduct(Array.isArray(res.data) ? res.data : []);
+      })
+      .catch((err) => {
+        console.error("Products loading error:", err);
+        setError("Products load nahi ho paaye.");
+      })
+      .finally(() => {
+        setLoading(false);
       });
   }, []);
 
-    return(
-        <>
-         <section className="py-5">
+  // Selected category ke according products filter karo
+  const filteredProducts =
+    selectedCategory === "All Products"
+      ? Product
+      : Product.filter(
+          (product) =>
+            product.category?.trim().toLowerCase() ===
+            selectedCategory.trim().toLowerCase()
+        );
 
-        <div className="container">
+  return (
+    <section className="py-5">
+      <div className="container">
+        {/* Heading */}
+        <div className="d-flex justify-content-between align-items-end mb-4">
+          <div>
+            <p
+              className="text-primary fw-bold mb-1"
+              style={{
+                fontSize: "13px",
+                letterSpacing: "1.5px",
+              }}
+            >
+              OUR COLLECTION
+            </p>
 
-          {/* Heading */}
-          <div className="d-flex justify-content-between align-items-end mb-4">
-
-            <div>
-              <p
-                className="text-primary fw-bold mb-1"
-                style={{
-                  fontSize: "13px",
-                  letterSpacing: "1.5px",
-                }}
-              >
-                OUR COLLECTION
-              </p>
-
-              <h2
-                className="fw-bold mb-0"
-                style={{
-                  color: "#111827",
-                }}
-              >
-                All Products
-              </h2>
-            </div>
-
-            <span className="text-secondary">
-              {Product.length} 
-            </span>
-
+            <h2
+              className="fw-bold mb-0"
+              style={{ color: "#111827" }}
+            >
+              {selectedCategory}
+            </h2>
           </div>
 
+          <span className="text-secondary">
+            {filteredProducts.length} Products
+          </span>
+        </div>
 
-          {/* Product Cards */}
+        {/* Loading / Error / Empty State */}
+        {loading ? (
+          <p className="text-center py-5">Loading products...</p>
+        ) : error ? (
+          <p className="text-center text-danger py-5">{error}</p>
+        ) : filteredProducts.length === 0 ? (
+          <p className="text-center text-secondary py-5">
+            Is category mein koi product nahi mila.
+          </p>
+        ) : (
+          /* Product Cards */
           <div className="row g-4">
-
-            {Product.map((product) => (
-
+            {filteredProducts.map((product) => (
               <div
                 key={product._id}
                 className="col-12 col-sm-6 col-lg-4 col-xl-3"
               >
-
                 <div
                   className="card h-100 border-0 overflow-hidden"
                   style={{
                     borderRadius: "16px",
-                    boxShadow:
-                      "0 5px 20px rgba(0,0,0,0.07)",
+                    boxShadow: "0 5px 20px rgba(0,0,0,0.07)",
                     transition: "0.3s",
                   }}
                 >
-
                   {/* Image */}
                   <div
                     className="position-relative"
@@ -80,14 +98,11 @@ const Cards = ()=>{
                       background: "#f1f3f6",
                     }}
                   >
-
                     <img
                       src={product.image}
                       className="w-100 h-100"
                       alt={product.title}
-                      style={{
-                        objectFit: "cover",
-                      }}
+                      style={{ objectFit: "cover" }}
                     />
 
                     <span
@@ -101,13 +116,10 @@ const Cards = ()=>{
                     >
                       New
                     </span>
-
                   </div>
-
 
                   {/* Card Body */}
                   <div className="card-body p-3">
-
                     <small
                       className="text-primary fw-bold"
                       style={{
@@ -116,14 +128,12 @@ const Cards = ()=>{
                         letterSpacing: "1px",
                       }}
                     >
-                    
+                      {product.category}
                     </small>
 
                     <h5
                       className="card-title fw-bold mt-1 mb-2"
-                      style={{
-                        color: "#111827",
-                      }}
+                      style={{ color: "#111827" }}
                     >
                       {product.title}
                     </h5>
@@ -143,47 +153,34 @@ const Cards = ()=>{
                       {product.description}
                     </p>
 
-
-                    {/* Price + Button */}
+                    {/* Price + Cart Button */}
                     <div className="d-flex justify-content-between align-items-center mt-3">
-
                       <h5
                         className="fw-bold mb-0"
-                        style={{
-                          color: "#111827",
-                        }}
+                        style={{ color: "#111827" }}
                       >
                         ₹{product.price}
                       </h5>
 
-                   <button
-  type="button"
-  className="btn btn-primary btn-sm px-3"
-  onClick={() => addToCart(product)}
-  style={{
-    borderRadius: "8px",
-  }}
->
-  Add +
-</button>
-
+                      <button
+                        type="button"
+                        className="btn btn-primary btn-sm px-3"
+                        onClick={() => addToCart(product)}
+                        style={{ borderRadius: "8px" }}
+                      >
+                        Add +
+                      </button>
                     </div>
-
                   </div>
-
                 </div>
-
               </div>
-
             ))}
-
           </div>
+        )}
+      </div>
+    </section>
+  );
+};
 
-        </div>
-      </section>
-        
-        </>
-    )
+export default Cards;
 
- }
- export default Cards;

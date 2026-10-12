@@ -2,11 +2,15 @@
 import { useState } from "react";
 import { Link } from "react-router-dom";
 import CartIcon from "./carticon";
-import Cards from "./Cards"
+import Cards from "./Cards";
 import Categories from "./Categories";
 
 const Home = () => {
-    const [selectedCategory, setSelectedCategory] = useState("All Products");
+  const [selectedCategory, setSelectedCategory] =
+    useState("All Products");
+
+  const [searchText, setSearchText] = useState("");
+
   return (
     <div
       style={{
@@ -14,8 +18,7 @@ const Home = () => {
         background: "#f5f7fb",
       }}
     >
-
-      {/* ================= NAVBAR ================= */}
+      {/* NAVBAR */}
       <nav
         className="navbar navbar-expand-lg sticky-top"
         style={{
@@ -25,8 +28,6 @@ const Home = () => {
         }}
       >
         <div className="container">
-
-          {/* Logo */}
           <Link
             className="navbar-brand fw-bold"
             to="/home"
@@ -36,10 +37,10 @@ const Home = () => {
               letterSpacing: "-1px",
             }}
           >
-            <span style={{ color: "#2563eb" }}>Shop</span>Cart
+            <span style={{ color: "#2563eb" }}>Shop</span>
+            Cart
           </Link>
 
-          {/* Mobile Button */}
           <button
             className="navbar-toggler"
             type="button"
@@ -53,17 +54,14 @@ const Home = () => {
             className="collapse navbar-collapse"
             id="navbarSupportedContent"
           >
-
-            {/* Navigation */}
             <ul className="navbar-nav mx-auto mb-2 mb-lg-0">
-
               <li className="nav-item">
-                <a
+                <Link
                   className="nav-link active fw-semibold px-3"
-                  href="#"
+                  to="/home"
                 >
                   Home
-                </a>
+                </Link>
               </li>
 
               <li className="nav-item">
@@ -76,24 +74,24 @@ const Home = () => {
               </li>
 
               <Categories
-        selectedCategory={selectedCategory}
-        setSelectedCategory={setSelectedCategory}
-      /> 
-                          
-
+                selectedCategory={selectedCategory}
+                setSelectedCategory={setSelectedCategory}
+              />
             </ul>
-             
 
-            {/* Search */}
+            {/* SEARCH */}
             <form
-              className="d-flex"
+              className="d-flex align-items-center"
               role="search"
               style={{ gap: "8px" }}
+              onSubmit={(e) => e.preventDefault()}
             >
               <input
                 className="form-control"
                 type="search"
                 placeholder="Search products..."
+                value={searchText}
+                onChange={(e) => setSearchText(e.target.value)}
                 style={{
                   width: "210px",
                   borderRadius: "8px",
@@ -103,30 +101,18 @@ const Home = () => {
               <button
                 className="btn btn-primary px-3"
                 type="submit"
-                
-                style={{
-                  borderRadius: "8px",
-                }}
+                style={{ borderRadius: "8px" }}
               >
                 Search
               </button>
+
               <CartIcon />
-               <div>
-      {/* Cart Icon */}
-      
-
-     
-    </div>
-
-              
             </form>
-
           </div>
         </div>
       </nav>
 
-
-      {/* ================= HERO SECTION ================= */}
+      {/* HERO SECTION */}
       <section
         className="py-5"
         style={{
@@ -135,14 +121,11 @@ const Home = () => {
         }}
       >
         <div className="container py-4">
-
           <div
             className="row align-items-center"
             style={{ minHeight: "300px" }}
           >
-
             <div className="col-lg-7">
-
               <p
                 className="fw-bold text-primary mb-2"
                 style={{
@@ -180,14 +163,19 @@ const Home = () => {
                 in one place.
               </p>
 
-              <button className="btn btn-primary px-4 py-2 fw-semibold rounded-3">
+              <button
+                className="btn btn-primary px-4 py-2 fw-semibold rounded-3"
+                onClick={() =>
+                  document
+                    .getElementById("products-section")
+                    ?.scrollIntoView({ behavior: "smooth" })
+                }
+              >
                 Shop Now
               </button>
-
             </div>
 
             <div className="col-lg-5 text-center d-none d-lg-block">
-
               <div
                 className="bg-white rounded-4 shadow-sm d-flex align-items-center justify-content-center"
                 style={{
@@ -197,20 +185,17 @@ const Home = () => {
               >
                 🛍️
               </div>
-
             </div>
-
           </div>
         </div>
       </section>
 
+      {/* PRODUCTS */}
+      <div id="products-section">
+        <Cards selectedCategory={selectedCategory} />
+      </div>
 
-
-       <Cards selectedCategory={selectedCategory} />
-     
-
-
-      {/* ================= FOOTER ================= */}
+      {/* FOOTER */}
       <footer
         className="py-4 mt-4"
         style={{
@@ -219,9 +204,9 @@ const Home = () => {
         }}
       >
         <div className="container text-center">
-
           <h5 className="fw-bold">
-            <span className="text-primary">Shop</span>Cart
+            <span className="text-primary">Shop</span>
+            Cart
           </h5>
 
           <p
@@ -233,10 +218,8 @@ const Home = () => {
           >
             © 2026 ShopCart. All Rights Reserved.
           </p>
-
         </div>
       </footer>
-
     </div>
   );
 };
