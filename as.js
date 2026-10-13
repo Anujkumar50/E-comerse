@@ -21,9 +21,8 @@ app.use(express.json());
 app.use(cookieParser());
 
 // ================= DATABASE =================
-
 mongoose
-  .connect("mongodb://localhost:27017/formDB")
+  .connect(process.env.MONGO_URI)
   .then(() => console.log("DB Connected"))
   .catch((err) => console.log(err));
 
